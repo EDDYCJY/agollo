@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 	"context"
+	"sync"
 )
 
 const appConfigFileName  ="app.properties"
@@ -194,6 +195,8 @@ func initServerIpList(ctx context.Context) {
 	}
 }
 
+var m = new(*sync.RWMutex)
+
 func syncServerIpListSuccessCallBack(responseBody []byte)(o interface{},err error){
 	logger.Debug("get all server info:",string(responseBody))
 
@@ -215,7 +218,10 @@ func syncServerIpListSuccessCallBack(responseBody []byte)(o interface{},err erro
 		if server==nil{
 			continue
 		}
+
+		m.Lock()
 		servers[server.HomepageUrl]=server
+		m.Unlock()
 	}
 	return
 }
