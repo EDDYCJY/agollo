@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"sync"
 	"time"
+	"context"
 )
 
 
@@ -79,7 +80,7 @@ type NotifyConfigComponent struct {
 
 }
 
-func (this *NotifyConfigComponent) Start()  {
+func (this *NotifyConfigComponent) Start(ctx context.Context)  {
 	t2 := time.NewTimer(long_poll_interval)
 	//long poll for sync
 	for {
@@ -87,6 +88,8 @@ func (this *NotifyConfigComponent) Start()  {
 		case <-t2.C:
 			notifySyncConfigServices()
 			t2.Reset(long_poll_interval)
+		case <-ctx.Done():
+			return
 		}
 	}
 }

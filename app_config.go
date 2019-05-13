@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"strings"
 	"time"
+	"context"
 )
 
 const appConfigFileName  ="app.properties"
@@ -178,7 +179,7 @@ func getLoadAppConfig(loadAppConfig func()(*AppConfig,error)) (*AppConfig,error)
 
 //set timer for update ip list
 //interval : 20m
-func initServerIpList() {
+func initServerIpList(ctx context.Context) {
 	syncServerIpList(nil)
 
 	t2 := time.NewTimer(refresh_ip_list_interval)
@@ -187,6 +188,8 @@ func initServerIpList() {
 		case <-t2.C:
 			syncServerIpList(nil)
 			t2.Reset(refresh_ip_list_interval)
+		case <-ctx.Done():
+			return
 		}
 	}
 }

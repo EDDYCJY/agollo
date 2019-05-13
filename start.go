@@ -1,17 +1,23 @@
 package agollo
 
+import "context"
+
 //start apollo
 func Start() error {
-	return StartWithLogger(nil)
+	return StartWith(context.TODO(), nil)
 }
 
-func StartWithLogger(loggerInterface LoggerInterface) error {
+func StartWithLogger(ctx context.Context, loggerInterface LoggerInterface) error {
+	return StartWith(ctx, loggerInterface)
+}
+
+func StartWith(ctx context.Context, loggerInterface LoggerInterface) error {
 	if loggerInterface != nil {
 		initLogger(loggerInterface)
 	}
 
   //init server ip list
-  go initServerIpList()
+  go initServerIpList(ctx)
 
 	//first sync
 	err := notifySyncConfigServices()
@@ -25,7 +31,7 @@ func StartWithLogger(loggerInterface LoggerInterface) error {
 	}
 
 	//start long poll sync config
-	go StartRefreshConfig(&NotifyConfigComponent{})
+	go StartRefreshConfig(ctx, &NotifyConfigComponent{})
 
 	logger.Info("agollo start finished , error:",err)
 	

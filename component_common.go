@@ -3,15 +3,16 @@ package agollo
 import (
 	"sync"
 	"encoding/json"
+	"context"
 )
 
 type AbsComponent interface {
-	Start()
+	Start(context.Context)
 }
 
 
-func StartRefreshConfig(component AbsComponent)  {
-	component.Start()
+func StartRefreshConfig(ctx context.Context, component AbsComponent)  {
+	component.Start(ctx)
 }
 
 type ApolloConnConfig struct {
