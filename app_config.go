@@ -195,7 +195,7 @@ func initServerIpList(ctx context.Context) {
 	}
 }
 
-var m = new(*sync.RWMutex)
+var m sync.RWMutex
 
 func syncServerIpListSuccessCallBack(responseBody []byte)(o interface{},err error){
 	logger.Debug("get all server info:",string(responseBody))
